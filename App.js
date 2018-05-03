@@ -56,7 +56,7 @@ handle()
   .then((user) => {
     console.log(user);
     this.setState({user: user});
-  })
+  }, () => this.props.navigation.navigate('Class'))
   .catch((err) => {
     console.log('WRONG SIGNIN', err);
   })
