@@ -16,6 +16,8 @@ import {
   ImageBackground
 } from 'react-native';
 import { StackNavigator } from 'react-navigation';
+import {GoogleSignin, GoogleSigninButton} from 'react-native-google-signin';
+
 
 require('./images/books.jpg')
 
@@ -25,6 +27,42 @@ class HomeScreen extends React.Component {
   static navigationOptions = {
     title: 'Home',
   };
+
+  componentDidMount()
+{
+
+  GoogleSignin.hasPlayServices({ autoResolve: true }).then(() => {
+// play services are available. can now configure library
+})
+.catch((err) => {
+console.log("Play services error", err.code, err.message);
+})
+GoogleSignin.configure({
+scopes: ["https://www.googleapis.com/auth/drive.readonly"], // what API you want to access on behalf of the user, default is email and profile
+//  iosClientId: <FROM DEVELOPER CONSOLE>, // only for iOS
+webClientId: "63644637716-46p2tpovlioutmvvoq84912t15p82ird.apps.googleusercontent.com", // client ID of type WEB for your server (needed to verify user ID and offline access)
+//  offlineAccess: true // if you want to access Google API on behalf of the user FROM YOUR SERVER
+//  hostedDomain: '' // specifies a hosted domain restriction
+//  forceConsentPrompt: true // [Android] if you want to show the authorization prompt at each login
+//  accountName: '' // [Android] specifies an account name on the device that should be used
+})
+.then(() => {
+// you can now call currentUserAsync()
+});
+}
+handle()
+{
+      GoogleSignin.signIn()
+  .then((user) => {
+    console.log(user);
+    this.setState({user: user});
+  })
+  .catch((err) => {
+    console.log('WRONG SIGNIN', err);
+  })
+  .done();
+}
+
   render() {
     const resizeMode = 'stretch';
 
@@ -48,6 +86,12 @@ class HomeScreen extends React.Component {
           title="Go to Clasess"
           onPress={() => this.props.navigation.navigate('Class')}
         />
+        <GoogleSigninButton
+    style={{width: 48, height: 48}}
+    size={GoogleSigninButton.Size.Icon}
+    color={GoogleSigninButton.Color.Dark}
+    onPress={this.handle.bind(this)}/>
+
 
       </View>
       </ImageBackground>
